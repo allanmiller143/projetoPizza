@@ -1,8 +1,10 @@
 package entities;
 
+import entities.exceptions.DomainException;
+
 public class Produto {
 	
-	private String nome;
+	protected String nome;
 	protected double preco;
 	
     public Produto() {
@@ -40,7 +42,8 @@ public class Produto {
 	    return  0.0;
 	}
 	
+	public String montaProduto() throws DomainException {
+		return null;
+	}
 	
-	
-
 }

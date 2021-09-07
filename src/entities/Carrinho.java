@@ -50,5 +50,8 @@ public class Carrinho {
 		return valorTotal;
 	}
 
+	public String toString(int i) {
+		return list.get(i).getNome() + ",  r$ " + list.get(i).preco +" reais";
+	}
 	
 }

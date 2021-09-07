@@ -2,8 +2,11 @@ package servico;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Scanner;
 
 public class Entrega {
+	
+	Scanner sc = new Scanner(System.in);
 	
 	public static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 	
@@ -16,7 +19,6 @@ public class Entrega {
 	}
 	
 	public Entrega(double precoDaEntrega, String endereco, int numeroDaCasa, Date momentoDoPedido) {
-		super();
 		this.precoDaEntrega = precoDaEntrega;
 		this.endereco = endereco;
 		this.numeroDaCasa = numeroDaCasa;
@@ -59,6 +61,17 @@ public class Entrega {
 		this.momentoDoPedido = momentoDoPedido;
 	}
 
+	public String montaEntrega() {
+		System.out.print("Endereco: ");
+		endereco = sc.nextLine();
+		System.out.print("número: ");
+		numeroDaCasa = sc.nextInt();
+		momentoDoPedido = new Date();
+		
+		return null;
+		
+	}
+	
 	
 	public String toString() {
 		return "momento do pedido - " + sdf.format(momentoDoPedido) + ", endereco: " + endereco + "n° " + numeroDaCasa;

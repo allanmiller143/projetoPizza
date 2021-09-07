@@ -1,126 +1,93 @@
 package application;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import entities.Bebida;
 import entities.Carrinho;
 import entities.Pizza;
 import entities.Produto;
+import entities.exceptions.DomainException;
 import servico.Entrega;
 
 public class Program {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws DomainException {
 		Scanner sc = new Scanner(System.in);
 
 		Carrinho c = new Carrinho();
 		Produto pizza = new Pizza();
 		Produto bebida = new Bebida();
 		Entrega entrega = new Entrega();
-		
-		List<String> ingredientesExtras = new ArrayList<String>();
-		
+
 		System.out.println("CARDAPIO DE PIZZAS: ");
 		System.out.println(pizza.mostraCardapio());
+
+		try {
 		
 		System.out.print("quantas pizzas serão pedidas: ");
 		int n = sc.nextInt();
-        sc.nextLine();
+		sc.nextLine();
 		// LEITURA DE DADOS : PEDIDO DE PIZZAS.
-		
-        for (int i = 0; i < n; i++) {
-    			System.out.println((i+1) + "° pedido: ");
-    			System.out.print("sabor da pizza: ");
-    			int saborTemporario = sc.nextInt();
-    			String sabor = pizza.associarIntComNome(saborTemporario);
-    			
-    			System.out.print("deseja adicionar algum ingrediente(s/n):  ");
-    			char x = sc.next().charAt(0);
-    			double preco = 0;
-    			
-    			if (x == 'n') {
-    				 preco = pizza.precoDaPizza(0);
-    				 pizza = new Pizza(sabor, preco, 0);
-    				 c.addProduto(pizza);
-    				 System.out.println(pizza.getPreco());
-    				 sc.nextLine();
-    				
-    			} else if(x =='s'){
-    				
-    				System.out.print("quantos ingredientes: ");
-    				int ingredientes = sc.nextInt();
-    					sc.nextLine();
-    				
-    					for(int j = 1;j <=ingredientes; j++) {
-    					System.out.print("ingrediente " + j + ": " );			
-    					String ingredientesExtras1 = sc.nextLine();	
-    					ingredientesExtras.add(ingredientesExtras1);
-    				    }	
-    			    preco = pizza.precoDaPizza(ingredientes);
-    				pizza = new Pizza(sabor, preco , ingredientes);
-    				
-    				c.addProduto(pizza);
-                    System.out.println(pizza.getPreco());
-    				
-    			}
 
+		for (int i = 1; i <= n; i++) {
+			System.out.print(i + "° pizza, ");
+			pizza = new Pizza();
+			pizza.montaProduto();
+			c.addProduto(pizza);
 		}
 
 		// LEITURA DE DADOS: PEDIDO DE BEBIDA.
-		System.out.print("deseja pedir alguma bebida: ");
+
+		System.out.println();
+		System.out.println("CARDAPIO DE BEBIDAS:");
+		System.out.println(bebida.mostraCardapio());
+		System.out.println("deseja pedir alguma bebida(s/n)? ");
 		char x = sc.next().charAt(0);
+
 		
-		if (x == 's') {	
-			System.out.println();
-			System.out.println("CARDAPIO DE BEBIDAS: ");
-			System.out.println(bebida.mostraCardapio());
-		    System.out.print("quantidade: ");
-		    n = sc.nextInt();
-		
-		    for(int i =1;i<=n;i++) {
-		    	System.out.print("bebida "+i+": ");
-		    	int bebidaTemporaria = sc.nextInt();
-		    	String bebida1 = bebida.associarIntComNome(bebidaTemporaria);
-		    	bebida = new Bebida(bebida1,8,1);
-		    	c.addProduto(bebida);
-		    }
-					
-		}
 
-		// LEITURA DE DADOS: ENTREGA?
-
-		System.out.print("delivery:(s/n): ");
-		x = sc.next().charAt(0);
-		Date horaDoPedido = new Date();
-
-		double total = 0;
 		if (x == 's') {
-			System.out.print("endereco: ");
-			sc.nextLine();
-			String endereco = sc.nextLine();
-			System.out.print("numero: ");
-			int numeroDaCasa = sc.nextInt(); 
-			entrega = new Entrega(5.00, endereco, numeroDaCasa, horaDoPedido);
-			total = c.total() + 5;
-		System.out.println(entrega);	
-		} else {
-			entrega = new Entrega(horaDoPedido);
-			total = c.total();
-		}
-		
-		
-		System.out.println("LISTA DE PEDIDOS: ");
-		for(Produto produto : c.getList()) {
-			System.out.println(produto.getNome() + "- r$ " + produto.getPreco());
+			System.out.print("quantas bebidas: ");
+		    int qtd = sc.nextInt();
+			
+			for (int i = 1; i <= qtd; i++) {
+				System.out.print(i + "°bebida: ");
+				bebida = new Bebida();
+				bebida.montaProduto();
+				c.addProduto(bebida);
+
+			}
 		}
 
-		
-		System.out.println("total a ser pago:" + total );
+		// É DELIVERY?.
 
-		sc.close();
+		System.out.print("delivery(s/n): ");
+		x = sc.next().charAt(0);
+
+		if (x == 's') {
+			entrega.montaEntrega();
+		}
+
+		// lista de pedidos e valor total.
+
+		System.out.println("lista de pedidos: ");
+		for (int i = 0; i < c.getList().size(); i++) {
+			System.out.println("produto " + (i + 1) + ": " + c.toString(i));
+        }
+			if (x == 's') {
+				System.out.println("total: r$ " + (c.total() + 5));
+			} else {
+				System.out.println("total: r$ " + c.total());
+			}
+			sc.close();
+		}
+		catch(DomainException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		catch(InputMismatchException e) {
+			System.out.println("erro inesperado!!!");
+		}
 	}
-
 }
